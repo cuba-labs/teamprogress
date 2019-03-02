@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<views xmlns="http://schemas.haulmont.com/cuba/view.xsd">
+
+    <view entity="tp_Project" name="project-view" extends="_local">
+        <property name="teams" view="_minimal"/>
+    </view>
+    <view entity="tp_Person" name="person-view" extends="_local">
+        <property name="user" view="_minimal"/>
+        <property name="team" view="_minimal"/>
+    </view>
+    <view entity="tp_WeekReport" name="weekReport-view" extends="_local">
+        <property name="person">
+            <property name="user">
+                <property name="name"/>
+            </property>
+            <property name="team" view="_minimal"/>
+        </property>
+        <property name="week" view="_minimal"/>
+    </view>
+</views>

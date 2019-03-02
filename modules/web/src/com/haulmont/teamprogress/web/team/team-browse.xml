@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://browseCaption"
+        focusComponent="teamsTable"
+        messagesPack="com.haulmont.teamprogress.web.team">
+    <data readOnly="true">
+        <collection id="teamsDc"
+                    class="com.haulmont.teamprogress.entity.Team"
+                    view="_base">
+            <loader id="teamsDl">
+                <query>
+                    <![CDATA[select e from tp_Team e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="teamsTable"
+            spacing="true">
+        <filter id="filter"
+                applyTo="teamsTable"
+                dataLoader="teamsDl">
+            <properties include=".*"/>
+        </filter>
+        <table id="teamsTable"
+               width="100%"
+               dataContainer="teamsDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="project"/>
+                <column id="name"/>
+            </columns>
+            <rowsCount/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="teamsTable.create"/>
+                <button id="editBtn" action="teamsTable.edit"/>
+                <button id="removeBtn" action="teamsTable.remove"/>
+            </buttonsPanel>
+        </table>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

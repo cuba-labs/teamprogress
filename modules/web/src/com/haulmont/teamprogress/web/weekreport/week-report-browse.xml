@@ -1,0 +1,86 @@
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd" caption="msg://browseCaption" focusComponent="table"
+        messagesPack="com.haulmont.teamprogress.web.weekreport">
+    <data>
+        <collection id="weekReportsDc" class="com.haulmont.teamprogress.entity.WeekReport" view="weekReport-view">
+            <loader id="weekReportsLd">
+                <query><![CDATA[select e from tp_WeekReport e
+                order by e.week.year, e.week.weekNumber, e.person.team.name, e.person.user.name]]></query>
+            </loader>
+        </collection>
+        <instance id="weekReportDc" class="com.haulmont.teamprogress.entity.WeekReport" view="weekReport-view">
+            <loader/>
+        </instance>
+        <collection id="weeksDc" class="com.haulmont.teamprogress.entity.Week" view="_base">
+            <loader id="weeksDl">
+                <query><![CDATA[select e from tp_Week e where e.year = :year]]></query>
+            </loader>
+        </collection>
+        <collection id="personsDc" class="com.haulmont.teamprogress.entity.Person" view="_minimal">
+            <loader>
+                <query><![CDATA[select e from tp_Person e order by e.user.login]]></query>
+            </loader>
+        </collection>
+    </data>
+    <actions>
+        <action id="save" icon="icons/ok.png" caption="mainMsg://actions.Ok" shortcut="CTRL-ENTER"/>
+        <action id="cancel" icon="icons/cancel.png" caption="mainMsg://actions.Cancel" description="Esc"/>
+    </actions>
+    <dialogMode height="600" width="800"/>
+    <layout>
+        <split id="split" height="100%" orientation="horizontal" reversePosition="true" width="100%">
+            <vbox id="lookupBox" expand="table" height="100%" margin="false,true,false,false" spacing="true">
+                <filter id="filter" applyTo="table" dataLoader="weekReportsLd">
+                    <properties include=".*"/>
+                </filter>
+                <groupTable id="table" width="100%" dataContainer="weekReportsDc" multiselect="true">
+                    <actions>
+                        <action id="create" type="create"/>
+                        <action id="edit" type="edit" constraintOperationType="update"/>
+                        <action id="remove" type="remove"/>
+                    </actions>
+                    <columns>
+                        <column id="week"/>
+                        <column id="person.team.name" caption="Team"/>
+                        <column id="person"/>
+                        <column id="planned" maxTextLength="30"/>
+                        <column id="actual" maxTextLength="30"/>
+                    </columns>
+                    <rowsCount/>
+                    <buttonsPanel id="buttonsPanel" alwaysVisible="true">
+                        <button id="createBtn" action="table.create"/>
+                        <button id="editBtn" action="table.edit"/>
+                        <button id="removeBtn" action="table.remove"/>
+                        <popupButton id="actionsBtn" caption="Actions">
+                            <actions>
+                                <action id="freezePlan" caption="Freeze Plan"/>
+                                <action id="freezeActual" caption="Freeze Actual"/>
+                                <action id="unfreezePlan" caption="Unfreeze Plan"/>
+                                <action id="unfreezeActual" caption="Unfreeze Actual"/>
+                            </actions>
+                        </popupButton>
+                    </buttonsPanel>
+                </groupTable>
+                <hbox id="lookupActions" spacing="true" visible="false">
+                    <button action="lookupSelectAction"/>
+                    <button action="lookupCancelAction"/>
+                </hbox>
+            </vbox>
+            <vbox id="editBox" height="100%" margin="false,false,false,true" expand="fieldGroupBox" spacing="true">
+                <scrollBox id="fieldGroupBox">
+                    <form id="form" dataContainer="weekReportDc" width="100%">
+                        <column width="100%">
+                            <textField id="personField" property="person" enable="false"/>
+                            <lookupField id="weekField" optionsContainer="weeksDc" property="week"/>
+                            <textArea id="plannedField" property="planned" rows="10"/>
+                            <textArea id="actualField" property="actual" rows="10"/>
+                        </column>
+                    </form>
+                </scrollBox>
+                <hbox id="actionsPane" spacing="true" visible="false">
+                    <button id="saveBtn" action="save"/>
+                    <button id="cancelBtn" action="cancel"/>
+                </hbox>
+            </vbox>
+        </split>
+    </layout>
+</window>

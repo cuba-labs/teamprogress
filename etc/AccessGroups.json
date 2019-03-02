@@ -1,0 +1,32 @@
+[
+  {
+    "_entityName": "sec$Group",
+    "id": "f8849e3e-7ea3-2252-975e-c76ef54556f0",
+    "parent": {
+      "_entityName": "sec$Group",
+      "id": "0fa2b1a5-1d68-4d69-9fbd-dff348347f93",
+      "version": 0,
+      "name": "Company"
+    },
+    "version": 1,
+    "constraints": [
+      {
+        "_entityName": "sec$Constraint",
+        "id": "a2122ecf-ec9d-506c-3ecf-d631de426ccf",
+        "checkType": "MEMORY",
+        "groovyScript": "{E}.person.user \u003d\u003d userSession.currentOrSubstitutedUser",
+        "filterXml": "\u003c?xml version\u003d\"1.0\" encoding\u003d\"UTF-8\"?\u003e\n\n\u003cfilter\u003e\n  \u003cand\u003e\n    \u003cc name\u003d\"person.user\" class\u003d\"com.haulmont.cuba.security.entity.User\" operatorType\u003d\"EQUAL\" width\u003d\"1\" type\u003d\"PROPERTY\"\u003e\u003c![CDATA[queryEntity.person.user.id \u003d :component$filterWithoutId.person_user85625]]\u003e\n      \u003cparam name\u003d\"component$filterWithoutId.person_user85625\" javaClass\u003d\"com.haulmont.cuba.security.entity.User\"\u003eNULL\u003c/param\u003e\n    \u003c/c\u003e\n  \u003c/and\u003e\n\u003c/filter\u003e\n",
+        "isActive": true,
+        "version": 1,
+        "entityName": "tp_WeekReport",
+        "operationType": "UPDATE",
+        "group": {
+          "_entityName": "sec$Group",
+          "id": "f8849e3e-7ea3-2252-975e-c76ef54556f0"
+        }
+      }
+    ],
+    "name": "Employees",
+    "sessionAttributes": []
+  }
+]
