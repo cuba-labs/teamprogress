@@ -11,12 +11,13 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-@NamePattern("#getCaption|weekNumber,startDate,endDate")
+@NamePattern("#getCaption|startDate,endDate,weekNumber")
 @Table(name = "TP_WEEK")
 @Entity(name = "tp_Week")
 public class Week extends StandardEntity {
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM");
+    private static final DateTimeFormatter DATE1_FORMATTER = DateTimeFormatter.ofPattern("dd/MM");
+    private static final DateTimeFormatter DATE2_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yy");
 
     @NotNull
     @Column(name = "START_DATE", nullable = false)
@@ -35,8 +36,8 @@ public class Week extends StandardEntity {
     protected Integer year;
 
     public String getCaption() {
-        return String.format("%d#%d %s-%s",
-                startDate.getYear(), weekNumber, startDate.format(DATE_FORMATTER), endDate.format(DATE_FORMATTER));
+        return String.format("%s-%s (%d)",
+                startDate.format(DATE1_FORMATTER), endDate.format(DATE2_FORMATTER), weekNumber);
     }
 
     public Integer getYear() {

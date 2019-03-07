@@ -12,7 +12,7 @@
         </instance>
         <collection id="weeksDc" class="com.haulmont.teamprogress.entity.Week" view="_base">
             <loader id="weeksDl">
-                <query><![CDATA[select e from tp_Week e where e.year = :year]]></query>
+                <query><![CDATA[select e from tp_Week e where e.year = :year order by e.weekNumber]]></query>
             </loader>
         </collection>
         <collection id="personsDc" class="com.haulmont.teamprogress.entity.Person" view="_minimal">
@@ -36,7 +36,7 @@
                     <actions>
                         <action id="create" type="create"/>
                         <action id="edit" type="edit" constraintOperationType="update"/>
-                        <action id="remove" type="remove"/>
+                        <action id="remove" type="remove" constraintOperationType="delete"/>
                     </actions>
                     <columns>
                         <column id="week"/>
@@ -70,7 +70,12 @@
                     <form id="form" dataContainer="weekReportDc" width="100%">
                         <column width="100%">
                             <textField id="personField" property="person" enable="false"/>
-                            <lookupField id="weekField" optionsContainer="weeksDc" property="week"/>
+                            <hbox caption="Week" width="100%" expand="weekField" spacing="true">
+                                <lookupField id="weekField" optionsContainer="weeksDc" dataContainer="weekReportDc" property="week"/>
+                                <button id="prevWeekBtn" caption="&lt;&lt;" description="Previous week"/>
+                                <button id="currentWeekBtn" caption="0" description="Current week"/>
+                                <button id="nextWeekBtn" caption="&gt;&gt;" description="Next week"/>
+                            </hbox>
                             <textArea id="plannedField" property="planned" rows="10"/>
                             <textArea id="actualField" property="actual" rows="10"/>
                         </column>

@@ -190,3 +190,11 @@ task restart(dependsOn: ['stop', ":${modulePrefix}-core:deploy", ":${modulePrefi
     }
 }
 
+task buildWar(type: CubaWarBuilding) {
+    includeJdbcDriver = true
+    includeContextXml = true
+    appProperties = ['cuba.automaticDatabaseUpdate': true]
+    webXmlPath = 'modules/web/web/WEB-INF/single-war-web.xml'
+    appHome = '${app.home}'
+    coreContextXmlPath = 'modules/core/web/META-INF/war-context.xml'
+}

@@ -4,15 +4,13 @@ import com.haulmont.cuba.core.entity.contracts.Id;
 import com.haulmont.cuba.core.global.*;
 import com.haulmont.cuba.gui.Dialogs;
 import com.haulmont.cuba.gui.Notifications;
-import com.haulmont.cuba.gui.components.Action;
-import com.haulmont.cuba.gui.components.DialogAction;
-import com.haulmont.cuba.gui.components.LookupField;
-import com.haulmont.cuba.gui.components.TextArea;
+import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.model.CollectionContainer;
 import com.haulmont.cuba.gui.model.CollectionLoader;
 import com.haulmont.cuba.gui.model.DataContext;
 import com.haulmont.cuba.gui.model.InstanceContainer;
 import com.haulmont.cuba.gui.screen.*;
+import com.haulmont.cuba.gui.screen.LookupComponent;
 import com.haulmont.teamprogress.entity.Person;
 import com.haulmont.teamprogress.entity.Week;
 import com.haulmont.teamprogress.entity.WeekReport;
@@ -43,6 +41,15 @@ public class WeekReportBrowse extends MasterDetailScreen<WeekReport> {
     @Inject
     private TextArea<String> actualField;
     @Inject
+    private PopupButton actionsBtn;
+    @Inject
+    private Button prevWeekBtn;
+    @Inject
+    private Button nextWeekBtn;
+    @Inject
+    private Button currentWeekBtn;
+
+    @Inject
     private DataManager dataManager;
     @Inject
     private UserSessionSource userSessionSource;
@@ -50,12 +57,20 @@ public class WeekReportBrowse extends MasterDetailScreen<WeekReport> {
     private Notifications notifications;
     @Inject
     private Dialogs dialogs;
+    @Inject
+    private DataContext dataContext;
 
     private boolean planEditable;
     private boolean actualEditable;
-    private boolean weekEditable;
-    @Inject
-    private DataContext dataContext;
+
+    @Subscribe
+    private void onInit(InitEvent event) {
+        if (!userSessionSource.getUserSession().isSpecificPermitted("tp.freezeWeeklyReport")) {
+            actionsBtn.setVisible(false);
+            actionsBtn.setEnabled(false);
+        }
+    }
+    
 
     @Subscribe
     private void onBeforeShow(BeforeShowEvent event) {
@@ -64,7 +79,6 @@ public class WeekReportBrowse extends MasterDetailScreen<WeekReport> {
 
     @Subscribe
     private void onAfterShow(AfterShowEvent event) {
-        weekEditable = weekField.isEditable();
         planEditable = plannedField.isEditable();
         actualEditable = actualField.isEditable();
     }
@@ -72,10 +86,14 @@ public class WeekReportBrowse extends MasterDetailScreen<WeekReport> {
     @Override
     protected void initEditComponents(boolean enabled) {
         super.initEditComponents(enabled);
+        weekField.setEditable(enabled);
+        prevWeekBtn.setVisible(enabled);
+        nextWeekBtn.setVisible(enabled);
+        currentWeekBtn.setVisible(enabled);
         if (enabled) {
             WeekReport weekReport = weekReportDc.getItem();
             weekField.setEditable(Boolean.TRUE.equals(weekReport.getPlanEditable())
-                    && Boolean.TRUE.equals(weekReport.getActEditable()) && weekEditable);
+                    && Boolean.TRUE.equals(weekReport.getActEditable()));
             plannedField.setEditable(Boolean.TRUE.equals(weekReport.getPlanEditable()) && planEditable);
             actualField.setEditable(Boolean.TRUE.equals(weekReport.getActEditable()) && actualEditable);
         }
@@ -160,4 +178,34 @@ public class WeekReportBrowse extends MasterDetailScreen<WeekReport> {
                 .show();
     }
 
+    @Subscribe("nextWeekBtn")
+    private void onNextWeekBtnClick(Button.ClickEvent event) {
+        Week week = weekField.getValue();
+        if (week == null) {
+            weekField.setValue(getCurrentWeek());
+        } else {
+            int index = weeksDc.getItemIndex(week);
+            if (index < weeksDc.getItems().size() - 1) {
+                weekField.setValue(weeksDc.getItems().get(index + 1));
+            }
+        }
+    }
+
+    @Subscribe("prevWeekBtn")
+    private void onPrevWeekBtnClick(Button.ClickEvent event) {
+        Week week = weekField.getValue();
+        if (week == null) {
+            weekField.setValue(getCurrentWeek());
+        } else {
+            int index = weeksDc.getItemIndex(week);
+            if (index > 0) {
+                weekField.setValue(weeksDc.getItems().get(index - 1));
+            }
+        }
+    }
+
+    @Subscribe("currentWeekBtn")
+    private void onCurrentWeekBtnClick(Button.ClickEvent event) {
+        weekField.setValue(getCurrentWeek());
+    }
 }
