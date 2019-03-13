@@ -194,6 +194,7 @@ task buildWar(type: CubaWarBuilding) {
     includeJdbcDriver = true
     includeContextXml = true
     appProperties = ['cuba.automaticDatabaseUpdate': true,
+                     'cuba.logDir': '${catalina.base}/logs',
                      'cuba.web.loginDialogDefaultUser': '<disabled>',
                      'cuba.web.loginDialogDefaultPassword': '<disabled>']
     webXmlPath = 'modules/web/web/WEB-INF/single-war-web.xml'
