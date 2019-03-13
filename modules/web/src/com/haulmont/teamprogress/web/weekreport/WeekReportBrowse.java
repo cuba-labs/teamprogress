@@ -25,7 +25,6 @@ import java.util.function.Consumer;
 @UiController("tp_WeekReport.browse")
 @UiDescriptor("week-report-browse.xml")
 @LookupComponent("table")
-@LoadDataBeforeShow
 public class WeekReportBrowse extends MasterDetailScreen<WeekReport> {
 
     @Inject
@@ -34,6 +33,8 @@ public class WeekReportBrowse extends MasterDetailScreen<WeekReport> {
     private CollectionContainer<Week> weeksDc;
     @Inject
     private InstanceContainer<WeekReport> weekReportDc;
+    @Inject
+    private CollectionLoader<WeekReport> weekReportsDl;
     @Inject
     private LookupField<Week> weekField;
     @Inject
@@ -48,6 +49,12 @@ public class WeekReportBrowse extends MasterDetailScreen<WeekReport> {
     private Button nextWeekBtn;
     @Inject
     private Button currentWeekBtn;
+    @Inject
+    private LookupField<Week> fromWeekFilterField;
+    @Inject
+    private LookupField<Week> toWeekFilterField;
+    @Inject
+    private LookupField<Person> personFilterField;
 
     @Inject
     private DataManager dataManager;
@@ -62,6 +69,8 @@ public class WeekReportBrowse extends MasterDetailScreen<WeekReport> {
 
     private boolean planEditable;
     private boolean actualEditable;
+    @Inject
+    private CollectionLoader<Person> personsDl;
 
     @Subscribe
     private void onInit(InitEvent event) {
@@ -70,11 +79,34 @@ public class WeekReportBrowse extends MasterDetailScreen<WeekReport> {
             actionsBtn.setEnabled(false);
         }
     }
-    
 
     @Subscribe
     private void onBeforeShow(BeforeShowEvent event) {
         weeksDl.setParameter("year", LocalDate.now().getYear());
+
+        weeksDl.load();
+        personsDl.load();
+
+        fromWeekFilterField.setValue(getRelativeWeek(-7));
+        toWeekFilterField.setValue(getRelativeWeek(7));
+        personFilterField.setValue(getCurrentPerson());
+        loadWeekReports();
+
+        fromWeekFilterField.addValueChangeListener(valueChangeEvent -> loadWeekReports());
+        toWeekFilterField.addValueChangeListener(valueChangeEvent -> loadWeekReports());
+        personFilterField.addValueChangeListener(valueChangeEvent -> loadWeekReports());
+    }
+
+    private void loadWeekReports() {
+        weekReportsDl.setParameter("startWeek", getWeekNumberOrNull(fromWeekFilterField.getValue()));
+        weekReportsDl.setParameter("endWeek", getWeekNumberOrNull(toWeekFilterField.getValue()));
+        weekReportsDl.setParameter("person", personFilterField.getValue());
+        weekReportsDl.load();
+    }
+
+    @Nullable
+    private Integer getWeekNumberOrNull(@Nullable Week week) {
+        return week != null ? week.getWeekNumber() : null;
     }
 
     @Subscribe
@@ -122,6 +154,16 @@ public class WeekReportBrowse extends MasterDetailScreen<WeekReport> {
                     .withCaption("Cannot find current user in the list of people").show();
             throw new SilentException();
         }
+    }
+
+    @Nullable
+    private Week getRelativeWeek(int offsetDays) {
+        return weeksDc.getItems().stream()
+                .filter(week ->
+                        (LocalDate.now().getDayOfYear() + offsetDays) >= week.getStartDate().getDayOfYear()
+                            && (LocalDate.now().getDayOfYear() + offsetDays) <= week.getEndDate().getDayOfYear())
+                .findFirst()
+                .orElse(null);
     }
 
     @Nullable

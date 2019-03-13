@@ -1,10 +1,26 @@
-<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd" caption="msg://browseCaption" focusComponent="table"
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        xmlns:c="http://schemas.haulmont.com/cuba/screen/jpql_condition.xsd"
+        caption="msg://browseCaption" focusComponent="table"
         messagesPack="com.haulmont.teamprogress.web.weekreport">
     <data>
         <collection id="weekReportsDc" class="com.haulmont.teamprogress.entity.WeekReport" view="weekReport-view">
-            <loader id="weekReportsLd">
+            <loader id="weekReportsDl">
                 <query><![CDATA[select e from tp_WeekReport e
-                order by e.week.year, e.week.weekNumber, e.person.team.name, e.person.user.name]]></query>
+                order by e.week.year, e.week.weekNumber, e.person.team.name, e.person.user.name]]>
+                    <condition>
+                        <and>
+                            <c:jpql>
+                                <c:where>e.week.weekNumber &gt;= :startWeek</c:where>
+                            </c:jpql>
+                            <c:jpql>
+                                <c:where>e.week.weekNumber &lt;= :endWeek</c:where>
+                            </c:jpql>
+                            <c:jpql>
+                                <c:where>e.person = :person</c:where>
+                            </c:jpql>
+                        </and>
+                    </condition>
+                </query>
             </loader>
         </collection>
         <instance id="weekReportDc" class="com.haulmont.teamprogress.entity.WeekReport" view="weekReport-view">
@@ -12,11 +28,12 @@
         </instance>
         <collection id="weeksDc" class="com.haulmont.teamprogress.entity.Week" view="_base">
             <loader id="weeksDl">
-                <query><![CDATA[select e from tp_Week e where e.year = :year order by e.weekNumber]]></query>
+                <query><![CDATA[select e from tp_Week e where e.year = :year order by e.weekNumber]]>
+                </query>
             </loader>
         </collection>
         <collection id="personsDc" class="com.haulmont.teamprogress.entity.Person" view="_minimal">
-            <loader>
+            <loader id="personsDl">
                 <query><![CDATA[select e from tp_Person e order by e.user.login]]></query>
             </loader>
         </collection>
@@ -28,15 +45,50 @@
     <dialogMode height="600" width="800"/>
     <layout>
         <split id="split" height="100%" orientation="horizontal" reversePosition="true" width="100%">
-            <vbox id="lookupBox" expand="table" height="100%" margin="false,true,false,false" spacing="true">
-                <filter id="filter" applyTo="table" dataLoader="weekReportsLd">
-                    <properties include=".*"/>
-                </filter>
+            <vbox id="lookupBox" expand="table" height="100%" margin="false,true,false,false" spacing="false">
+                <tabSheet id="filterTabSheet">
+                    <tab id="customFilterTab" caption="Custom Filter" spacing="false">
+                        <flowBox spacing="true" margin="true,false,false,false">
+                            <hbox>
+                                <label value="From" width="50px" align="MIDDLE_RIGHT"/>
+                                <lookupPickerField id="fromWeekFilterField" width="160px" optionsContainer="weeksDc">
+                                    <actions>
+                                        <action id="clear" type="picker_clear"/>
+                                    </actions>
+                                </lookupPickerField>
+                            </hbox>
+                            <hbox>
+                                <label value="Till" width="50px" align="MIDDLE_RIGHT"/>
+                                <lookupPickerField id="toWeekFilterField" width="160px" optionsContainer="weeksDc">
+                                    <actions>
+                                        <action id="clear" type="picker_clear"/>
+                                    </actions>
+                                </lookupPickerField>
+                            </hbox>
+                            <hbox>
+                                <label value="Person" width="50px" align="MIDDLE_RIGHT"/>
+                                <lookupPickerField id="personFilterField" width="160px" optionsContainer="personsDc">
+                                    <actions>
+                                        <action id="clear" type="picker_clear"/>
+                                    </actions>
+                                </lookupPickerField>
+                            </hbox>
+                        </flowBox>
+                        <label value="&lt;hr/&gt;" htmlEnabled="true" width="100%"/>
+                    </tab>
+                    <tab id="genericFilterTab" caption="Generic Filter" margin="true,false,true,false">
+                        <filter id="filter" applyTo="table" dataLoader="weekReportsDl"
+                                collapsable="true" collapsed="false">
+                            <properties include=".*"/>
+                        </filter>
+                    </tab>
+                </tabSheet>
                 <groupTable id="table" width="100%" dataContainer="weekReportsDc" multiselect="true">
                     <actions>
                         <action id="create" type="create"/>
                         <action id="edit" type="edit" constraintOperationType="update"/>
                         <action id="remove" type="remove" constraintOperationType="delete"/>
+                        <action id="refresh" type="refresh"/>
                     </actions>
                     <columns>
                         <column id="week"/>
@@ -50,6 +102,7 @@
                         <button id="createBtn" action="table.create"/>
                         <button id="editBtn" action="table.edit"/>
                         <button id="removeBtn" action="table.remove"/>
+                        <button id="refreshBtn" action="table.refresh"/>
                         <popupButton id="actionsBtn" caption="Actions">
                             <actions>
                                 <action id="freezePlan" caption="Freeze Plan"/>

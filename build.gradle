@@ -1,6 +1,6 @@
 
 buildscript {
-    ext.cubaVersion = '7.0-SNAPSHOT'
+    ext.cubaVersion = '7.0.2'
     repositories { 
         mavenLocal()
         maven {
@@ -30,7 +30,7 @@ apply(plugin: 'cuba')
 cuba {
     artifact {
         group = 'com.haulmont.teamprogress'
-        version = '0.1'
+        version = '0.2'
         isSnapshot = true
     }
     tomcat {
@@ -193,7 +193,9 @@ task restart(dependsOn: ['stop', ":${modulePrefix}-core:deploy", ":${modulePrefi
 task buildWar(type: CubaWarBuilding) {
     includeJdbcDriver = true
     includeContextXml = true
-    appProperties = ['cuba.automaticDatabaseUpdate': true]
+    appProperties = ['cuba.automaticDatabaseUpdate': true,
+                     'cuba.web.loginDialogDefaultUser': '<disabled>',
+                     'cuba.web.loginDialogDefaultPassword': '<disabled>']
     webXmlPath = 'modules/web/web/WEB-INF/single-war-web.xml'
     appHome = '${app.home}'
     coreContextXmlPath = 'modules/core/web/META-INF/war-context.xml'

@@ -1,5 +1,6 @@
 package com.haulmont.teamprogress.entity;
 
+import com.google.common.base.Strings;
 import com.haulmont.chile.core.annotations.NamePattern;
 import com.haulmont.chile.core.annotations.NumberFormat;
 import com.haulmont.cuba.core.entity.StandardEntity;
@@ -11,7 +12,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-@NamePattern("#getCaption|startDate,endDate,weekNumber")
+@NamePattern("#getCaption|weekNumber,startDate,endDate")
 @Table(name = "TP_WEEK")
 @Entity(name = "tp_Week")
 public class Week extends StandardEntity {
@@ -36,8 +37,10 @@ public class Week extends StandardEntity {
     protected Integer year;
 
     public String getCaption() {
-        return String.format("%s-%s (%d)",
-                startDate.format(DATE1_FORMATTER), endDate.format(DATE2_FORMATTER), weekNumber);
+        return String.format("#%s %s-%s",
+                Strings.padStart(String.valueOf(weekNumber), 2, '0'),
+                startDate.format(DATE1_FORMATTER),
+                endDate.format(DATE2_FORMATTER));
     }
 
     public Integer getYear() {
