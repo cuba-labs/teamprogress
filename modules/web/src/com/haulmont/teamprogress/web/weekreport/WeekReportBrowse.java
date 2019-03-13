@@ -89,7 +89,7 @@ public class WeekReportBrowse extends MasterDetailScreen<WeekReport> {
 
         fromWeekFilterField.setValue(getRelativeWeek(-7));
         toWeekFilterField.setValue(getRelativeWeek(7));
-        personFilterField.setValue(getCurrentPerson());
+        personFilterField.setValue(getCurrentPersonOrNull());
         loadWeekReports();
 
         fromWeekFilterField.addValueChangeListener(valueChangeEvent -> loadWeekReports());
@@ -142,18 +142,24 @@ public class WeekReportBrowse extends MasterDetailScreen<WeekReport> {
     }
 
     private Person getCurrentPerson() {
-        Optional<Person> personOpt = dataManager.load(Person.class)
-                .query("select p from tp_Person p where p.user = :user")
-                .parameter("user", userSessionSource.getUserSession().getCurrentOrSubstitutedUser())
-                .view("person-view")
-                .optional();
-        if (personOpt.isPresent()) {
-            return personOpt.get();
+        Person person = getCurrentPersonOrNull();
+        if (person != null) {
+            return person;
         } else {
             notifications.create(Notifications.NotificationType.WARNING)
                     .withCaption("Cannot find current user in the list of people").show();
             throw new SilentException();
         }
+    }
+
+    @Nullable
+    private Person getCurrentPersonOrNull() {
+        return dataManager.load(Person.class)
+                .query("select p from tp_Person p where p.user = :user")
+                .parameter("user", userSessionSource.getUserSession().getCurrentOrSubstitutedUser())
+                .view("person-view")
+                .optional()
+                .orElse(null);
     }
 
     @Nullable
