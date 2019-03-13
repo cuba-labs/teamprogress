@@ -2,6 +2,7 @@
 <menu-config xmlns="http://schemas.haulmont.com/cuba/menu.xsd">
     <menu id="application-tp" insertBefore="administration">
         <item screen="tp_WeekReport.browse" description="" icon=""/>
+        <item screen="tp_WeekReport.legacy.browse" description="" icon=""/>
         <separator/>
         <item screen="tp_Week.browse"/>
         <item screen="tp_Project.browse"/>

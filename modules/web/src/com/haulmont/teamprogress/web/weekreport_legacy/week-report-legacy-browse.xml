@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+        caption="msg://browseCaption"
+        class="com.haulmont.teamprogress.web.weekreport_legacy.WeekReportLegacyBrowse"
+        focusComponent="weekReportsTable"
+        lookupComponent="weekReportsTable"
+        messagesPack="com.haulmont.teamprogress.web.weekreport_legacy">
+    <dsContext>
+        <groupDatasource id="weekReportsDs"
+                         class="com.haulmont.teamprogress.entity.WeekReport"
+                         view="weekReport-view">
+            <query>
+                <![CDATA[select e from tp_WeekReport e]]>
+            </query>
+        </groupDatasource>
+    </dsContext>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="weekReportsTable"
+            spacing="true">
+        <filter id="filter"
+                applyTo="weekReportsTable"
+                datasource="weekReportsDs">
+            <properties include=".*"/>
+        </filter>
+        <groupTable id="weekReportsTable"
+                    width="100%">
+            <actions>
+                <action id="create"
+                        openType="NEW_TAB"/>
+                <action id="edit"
+                        openType="NEW_TAB"/>
+                <action id="remove"/>
+            </actions>
+            <columns>
+                <column id="person"/>
+                <column id="person.team"/>
+                <column id="week"/>
+                <column id="planned"/>
+                <column id="actual"/>
+                <column id="planEditable"/>
+                <column id="actEditable"/>
+            </columns>
+            <rows datasource="weekReportsDs"/>
+            <rowsCount/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="weekReportsTable.create"/>
+                <button id="editBtn" action="weekReportsTable.edit"/>
+                <button id="removeBtn" action="weekReportsTable.remove"/>
+            </buttonsPanel>
+        </groupTable>
+    </layout>
+</window>

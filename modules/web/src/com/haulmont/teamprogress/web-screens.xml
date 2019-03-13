@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <screen-config xmlns="http://schemas.haulmont.com/cuba/screens.xsd">
 
+    <screen id="tp_WeekReport.legacy.browse"
+            template="com/haulmont/teamprogress/web/weekreport_legacy/week-report-legacy-browse.xml"/>
 </screen-config>

@@ -8,7 +8,7 @@
       maxIdle="2"
       maxWaitMillis="5000"
       driverClassName="org.postgresql.Driver"
-      url="jdbc:postgresql://localhost/teamprogress"
+      url="jdbc:postgresql://localhost/teamprogress_prod"
       username="cuba"
       password="cuba"/>
 
