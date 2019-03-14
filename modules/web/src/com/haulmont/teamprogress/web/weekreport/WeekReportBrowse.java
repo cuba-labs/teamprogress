@@ -55,6 +55,8 @@ public class WeekReportBrowse extends MasterDetailScreen<WeekReport> {
     private LookupField<Week> toWeekFilterField;
     @Inject
     private LookupField<Person> personFilterField;
+    @Inject
+    private GroupTable<WeekReport> table;
 
     @Inject
     private DataManager dataManager;
@@ -111,6 +113,7 @@ public class WeekReportBrowse extends MasterDetailScreen<WeekReport> {
 
     @Subscribe
     private void onAfterShow(AfterShowEvent event) {
+        table.expandAll();
         planEditable = plannedField.isEditable();
         actualEditable = actualField.isEditable();
     }

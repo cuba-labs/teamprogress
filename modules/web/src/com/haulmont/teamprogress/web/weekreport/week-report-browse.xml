@@ -48,32 +48,38 @@
             <vbox id="lookupBox" expand="table" height="100%" margin="false,true,false,false" spacing="false">
                 <tabSheet id="filterTabSheet">
                     <tab id="customFilterTab" caption="Custom Filter" spacing="false">
-                        <flowBox spacing="true" margin="true,false,false,false">
-                            <hbox>
-                                <label value="From" width="50px" align="MIDDLE_RIGHT"/>
-                                <lookupPickerField id="fromWeekFilterField" width="160px" optionsContainer="weeksDc">
-                                    <actions>
-                                        <action id="clear" type="picker_clear"/>
-                                    </actions>
-                                </lookupPickerField>
-                            </hbox>
-                            <hbox>
-                                <label value="Till" width="50px" align="MIDDLE_RIGHT"/>
-                                <lookupPickerField id="toWeekFilterField" width="160px" optionsContainer="weeksDc">
-                                    <actions>
-                                        <action id="clear" type="picker_clear"/>
-                                    </actions>
-                                </lookupPickerField>
-                            </hbox>
-                            <hbox>
-                                <label value="Person" width="50px" align="MIDDLE_RIGHT"/>
-                                <lookupPickerField id="personFilterField" width="160px" optionsContainer="personsDc">
-                                    <actions>
-                                        <action id="clear" type="picker_clear"/>
-                                    </actions>
-                                </lookupPickerField>
-                            </hbox>
-                        </flowBox>
+                        <grid margin="true,false,true,false" spacing="true" width="100%">
+                            <columns>
+                                <column flex="0"/>
+                                <column flex="1"/>
+                                <column flex="0"/>
+                                <column flex="1"/>
+                                <column flex="0"/>
+                                <column flex="1"/>
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="From week" align="MIDDLE_RIGHT"/>
+                                    <lookupPickerField id="fromWeekFilterField" width="100%" optionsContainer="weeksDc">
+                                        <actions>
+                                            <action id="clear" type="picker_clear"/>
+                                        </actions>
+                                    </lookupPickerField>
+                                    <label value="To week" align="MIDDLE_RIGHT"/>
+                                    <lookupPickerField id="toWeekFilterField" width="100%" optionsContainer="weeksDc">
+                                        <actions>
+                                            <action id="clear" type="picker_clear"/>
+                                        </actions>
+                                    </lookupPickerField>
+                                    <label value="Person" align="MIDDLE_RIGHT"/>
+                                    <lookupPickerField id="personFilterField" width="100%" optionsContainer="personsDc">
+                                        <actions>
+                                            <action id="clear" type="picker_clear"/>
+                                        </actions>
+                                    </lookupPickerField>
+                                </row>
+                            </rows>
+                        </grid>
                         <label value="&lt;hr/&gt;" htmlEnabled="true" width="100%"/>
                     </tab>
                     <tab id="genericFilterTab" caption="Generic Filter" margin="true,false,true,false">
